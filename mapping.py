@@ -16,6 +16,11 @@ def get_documents(file_path):
 txt_file = open("scripts.txt", "w+")
 
 
+def cf_target_command(org, env, space):
+    script = 'cf target -o ' + org + '-' + env + ' -s ' + space
+    print(script)
+
+
 def cf_command(service_name, rlm_id, username, password):
     script = 'cf ' + service_name + ' credhub default ' + rlm_id + " -c " + '\'{"user": "' + username + '","password": "' + password + '"}\''
     txt_file.write(script+'\r\n')
@@ -50,6 +55,7 @@ with os.scandir(yml_files_path) as dirs:
 
 for yml_file in yml_files_to_parse:
     document = get_documents(yml_files_path + yml_file)
+    cf_target_command(document["ORG"], environment_argument, document["SPACE"])
     credhubs = document["credhubs"]
     for credhub in credhubs:
         create_script = False
