@@ -33,12 +33,41 @@ def sf_command(service_name, rlm_id, org, space):
     print(script)
 
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+
+def format_environment_variable(env_var):
+    no_dms_env_var = check_for_dms_and_remove(env_var)
+    formatted_env_var = check_last_char_if_number_remove(no_dms_env_var)
+    return formatted_env_var
+
+
+def check_for_dms_and_remove(env_var):
+    env_var_array = env_var.split('DMS')
+    if len(env_var_array) > 1:
+        return env_var_array[0] + env_var_array[1]
+    return env_var_array[0]
+
+
+def check_last_char_if_number_remove(env_variable):
+    last_char = env_variable[-1]
+    is_truly_number = is_number(last_char)
+    if is_truly_number:
+        return env_variable[:-1]
+    return env_variable
+
+
 script_arguments = sys.argv
 if len(script_arguments) <= 1:
     print("Environment and yml files path are required as arguments in that order")
     sys.exit(0)
 
-environment_argument = script_arguments[1]
+environment_argument = format_environment_variable(script_arguments[1])
 if environment_argument not in supported_environments:
     print('Given environment: ' + environment_argument + ', is not one of supported environments.')
     sys.exit(0)
