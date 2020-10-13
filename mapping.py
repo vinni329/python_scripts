@@ -19,23 +19,29 @@ txt_file = open("scripts.txt", "w+")
 
 def cf_target_command(org, env, space):
     script = 'cf target -o ' + org + '-' + env + ' -s ' + space
-    print(script)
+    txt_file.write(script + '\r\n')
 
 
 def cf_command(service_name, rlm_id, username, password):
     script = 'cf ' + service_name + ' credhub default ' + rlm_id + " -c " + '\'{"user": "' + username + '","password": "' + password + '"}\''
-    txt_file.write(script+'\r\n')
-    print(script)
+    txt_file.write(script + '\r\n')
 
 
 def sf_command(service_name, rlm_id, org, space, env_var):
     script = 'cf ' + service_name + ' ' + rlm_id + ' -o ' + org + ' -s ' + space + '-' + env_var
     if is_dev_uat:
-        script1 = script + '1' + '\r\n'
-        script3 = script + '3' + '\r\n'
-        for scr in [script1, script3]:
-            txt_file.write(scr)
-        return
+        if env_var[:2] == 'SW':
+            script2 = script + '2' + '\r\n'
+            script4 = script + '4' + '\r\n'
+            for scr in [script2, script4]:
+                txt_file.write(scr)
+            return
+        if env_var[:2] == 'GT':
+            script1 = script + '1' + '\r\n'
+            script3 = script + '3' + '\r\n'
+            for scr in [script1, script3]:
+                txt_file.write(scr)
+            return
     txt_file.write(script + '\r\n')
     print(script)
 
